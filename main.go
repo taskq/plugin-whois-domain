@@ -9,9 +9,6 @@ import (
 	"net"
 	"regexp"
 	"strings"
-	// "net/http"
-	// "net/url"
-	// "path"
 
 	"github.com/rs/zerolog/log"
 )
@@ -19,11 +16,6 @@ import (
 var PluginName string = "WhoisDomain"
 var PluginDescription string = "Whois Domain plugin for TaskQ Subscriber"
 var BuildVersion string = "0.0.0"
-
-// type ConfigurationStruct struct {
-// 	UpstreamPublisherURL     *url.URL `json:"publisher_url"`
-// 	UpstreamPublisherChannel string   `json:"publisher_channel"`
-// }
 
 type PayloadStruct struct {
 	WhoisServer string `json:"whois_server"`
@@ -79,14 +71,7 @@ func SubmitWhoisQuery(key string, whois_server string) (result map[string][]stri
 			return nil, err
 		}
 
-		// if len(str) > 0 && strings.HasPrefix(str, "   ") {
-
 		result_raw = append(result_raw, strings.Trim(str, " \r\n"))
-
-		// 	log.Debug().
-		// 		Str("chunk", str).
-		// 		Msgf("Chunk")
-		// }
 	}
 
 	object_regex := regexp.MustCompile("^(?P<leadin_spacing>[\\s]+)?(?P<key>[\\w\\s]+?):(?P<table_spacing>\\s+)?(?P<value>.*)$")
