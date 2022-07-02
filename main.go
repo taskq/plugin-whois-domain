@@ -116,7 +116,7 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 
 	log.Info().
 		Str("plugin", PluginName).
-		Int("quotes_num", strings.Count(outputPayload.whoisResult, `"`)).
+		Int("quotes_num", strings.Count(outputPayload.Whois, `"`)).
 		Msgf("payloadParsed: %+v", payloadParsed)
 
 	outputPayloadJSON, err := json.Marshal(outputPayload)
