@@ -79,6 +79,12 @@ func SubmitWhoisQuery(key string, whois_server string) (result string, err error
 
 func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, err error) {
 
+	log.Debug().
+		Str("plugin", PluginName).
+		Int("quotes_num", strings.Count(string(payload), `"`)).
+		Str("payload", string(payload)).
+		Msgf("Payload accepted")
+
 	payloadParsed := PayloadStruct{}
 	JSONDecoder := json.NewDecoder(bytes.NewReader(payload))
 
@@ -88,7 +94,7 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 		return nil, fmt.Errorf("Error while reading payload: %v", err)
 	}
 
-	log.Info().
+	log.Debug().
 		Str("plugin", PluginName).
 		Msgf("payloadParsed: %+v", payloadParsed)
 
@@ -100,13 +106,18 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 
 	log.Info().
 		Int("result_items", len(whoisResult)).
-		Msgf("Whois query submitted")
+		Msgf("Whois query result obtained")
 
 	outputPayload := OutputPayloadStruct{
 		Domain:      payloadParsed.Domain,
 		WhoisServer: payloadParsed.WhoisServer,
 		Whois:       whoisResult,
 	}
+
+	log.Info().
+		Str("plugin", PluginName).
+		Int("quotes_num", strings.Count(payloadParsed.whoisResult, `"`)).
+		Msgf("payloadParsed: %+v", payloadParsed)
 
 	outputPayloadJSON, err := json.Marshal(outputPayload)
 	if err != nil {
@@ -116,7 +127,8 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 
 	log.Info().
 		Str("plugin", PluginName).
-		Bytes("payload", payload).
+		Bytes("outputPayloadJSON", outputPayloadJSON).
+		Int("quotes_num", strings.Count(string(outputPayloadJSON), `"`)).
 		Msgf("Preparing to publish a message")
 
 	return outputPayloadJSON, nil
