@@ -110,7 +110,7 @@ jobs:
           message: |
             Build: <b>${{env.APP_NAME}}</b> v${{env.PLANNED_VERSION}} (${{ env.BRANCH_NAME }})
 
-            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            <code>https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}</code>
           recipient: "${{ secrets.NOTIFICATIONS_DEFAULT_RECIPIENT }}"
           rest_gateway_url: "${{ secrets.REST_GATEWAY_API_URL }}"
           rest_gateway_token: "${{ secrets.REST_GATEWAY_TOKEN }}"
