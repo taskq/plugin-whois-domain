@@ -117,6 +117,7 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 			}
 		}
 
+		break
 	}
 
 	log.Info().
