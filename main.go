@@ -98,13 +98,29 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 		Str("plugin", PluginName).
 		Msgf("payloadParsed: %+v", payloadParsed)
 
-	whoisResult, err := SubmitWhoisQuery(payloadParsed.Domain, payloadParsed.WhoisServer)
-	if err != nil {
-		log.Error().Err(err).Msgf("Error while submitting whois query")
-		return nil, fmt.Errorf("Error while submitting whois query: %v", err)
+	var connect_attempts int = 0
+	var whoisResult string
+
+	for {
+
+		whoisResult, err = SubmitWhoisQuery(payloadParsed.Domain, payloadParsed.WhoisServer)
+		if err != nil {
+			log.Error().Err(err).Msgf("Error while submitting whois query")
+
+			connect_attempts += 1
+
+			if connect_attempts > 5 {
+				return nil, fmt.Errorf("Error while submitting whois query: %v", err)
+			} else {
+				log.Warn().Err(err).Msgf("Error while submitting whois query, retrying...")
+
+			}
+		}
+
 	}
 
 	log.Info().
+		Int("connect_attempts", connect_attempts).
 		Int("result_items", len(whoisResult)).
 		Msgf("Whois query result obtained")
 
@@ -136,7 +152,7 @@ func ExecCommand(payload []byte, configurationRaw interface{}) (result []byte, e
 
 func main() {
 
-	returned, err := ExecCommand([]byte(`{"whois_server": "whois.verisign-grs.com"}`), nil)
+	returned, err := ExecCommand([]byte(`{"domain": "google.com", "whois_server": "not-whois.verisign-grs.com"}`), nil)
 
 	log.Info().
 		Err(err).
